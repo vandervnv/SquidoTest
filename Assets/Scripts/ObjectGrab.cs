@@ -19,22 +19,54 @@ public class ObjectGrab : MonoBehaviour
     public void releaseAction()
     {
         if(returnToStart) Invoke("ReturnToStartPosition", 5f);
-        if(releaseEvent != null) releaseEvent.Invoke();
+        releaseEvent?.Invoke();
     }
 
     public void grabAction()
     {
         CancelInvoke();
-        if (grabEvent != null) grabEvent.Invoke();
+        grabEvent?.Invoke();
     }
 
     public void ReturnToStartPosition()
     {
-        Debug.Log("volta");
         if(isGrabbed) return;
 
+        Rigidbody rb = GetComponent<Rigidbody>();
+
         transform.position = startPosition;
-        GetComponent<Rigidbody>().velocity = Vector3.zero;
-        GetComponent<Rigidbody>().isKinematic = true;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
+    }
+
+    // Function that sets the layer and adds the Rigidbody when called from the Inspector when the script is added
+    private void Reset()
+    {
+        // Automatically set the layer to "GrabMe"
+        int layerIndex = LayerMask.NameToLayer("GrabMe");
+        if (layerIndex != -1)
+        {
+            gameObject.layer = layerIndex;
+        }
+        else
+        {
+            Debug.LogWarning("The 'GrabMe' layer does not exist. Please add it in the Tags and Layers settings.");
+        }
+
+        // Ensure the GameObject has a Rigidbody, add one if necessary
+        if (GetComponent<Rigidbody>() == null)
+        {
+            Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;  // Optional: Make the Rigidbody kinematic (no physics simulation)
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
+
+        // Check if the object has any Collider component attached
+        if (GetComponent<Collider>() == null)
+        {
+            // If no collider is found, add a BoxCollider (you can choose other types too)
+            gameObject.AddComponent<BoxCollider>();
+            Debug.Log("No Collider found. Adding BoxCollider.");
+        }
     }
 }

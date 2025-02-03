@@ -25,15 +25,11 @@ public class GameController : MonoBehaviour
 
     private void UpdateScoreMaterial()
     {
-        if (scoreMaterial != null)
-        {
+
             //As score is a float inside the shader we need a workaround to keep it round adding 0.1f does the trick
-            scoreMaterial.SetFloat(shaderProperty, (float)score+0.1f);
-        }
-        else
-        {
-            Debug.LogWarning("Score material not assigned!");
-        }
+            //Also verify if the score material is different of null before setfloat to avoid errors
+            scoreMaterial?.SetFloat(shaderProperty, (float)score+0.1f);
+
     }
 
     //Reset Camera to the desired position

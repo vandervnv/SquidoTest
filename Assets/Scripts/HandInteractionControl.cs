@@ -84,6 +84,7 @@ public class HandInteractionControl : MonoBehaviour
 
         // Smooth velocity by keeping a fixed number of samples
         velocitySamples.Enqueue(currentVelocity);
+        //Remove the oldest sample below to always keep the same number of samples using Dequeue
         if (velocitySamples.Count > velocitySampleSize)
             velocitySamples.Dequeue();
 
@@ -93,6 +94,7 @@ public class HandInteractionControl : MonoBehaviour
             velocity += sample;
         }
 
+        //calculate the average velocity by dividing the samples that was sum on velocity += sample 
         velocity /= velocitySamples.Count;
     }
 
